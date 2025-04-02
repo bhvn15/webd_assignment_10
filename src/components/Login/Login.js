@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import API from '../../services/api';
 import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { loginSuccess } from '../../redux/authSlice';
 import {
   Box,
   Button,
@@ -14,6 +16,7 @@ const Login = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -26,11 +29,21 @@ const Login = () => {
 
       console.log('✅ Login response:', res.data);
 
-      sessionStorage.setItem('token', res.data.user.id);
-      sessionStorage.setItem('user', JSON.stringify(res.data.user));
+      // Dispatch to Redux
+      dispatch(loginSuccess({
+        user: res.data.user,
+        token: res.data.user.id
+      }));
 
       alert('Login successful!');
-      navigate('/home');
+
+      // Navigate based on role
+      if (res.data.user.type === 'admin') {
+        navigate('/employees');
+      } else {
+        navigate('/jobs');
+      }
+
     } catch (error) {
       console.error('🚨 Login failed:', error.response?.data?.error || error.message);
       alert(`Login failed: ${error.response?.data?.error || error.message}`);

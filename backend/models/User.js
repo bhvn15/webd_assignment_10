@@ -4,14 +4,14 @@ const userSchema = new mongoose.Schema({
   fullName: {
     type: String,
     required: true,
-    trim: true // ✅ Keeps the whitespace clean
+    trim: true
   },
   email: {
     type: String,
     required: true,
     unique: true,
     trim: true,
-    lowercase: true // ✅ Converts email to lowercase automatically
+    lowercase: true
   },
   password: {
     type: String,
@@ -19,11 +19,16 @@ const userSchema = new mongoose.Schema({
   },
   imagePath: {
     type: String,
-    default: null // ✅ Optional image path
+    default: null
+  },
+  type: {
+    type: String,
+    required: true,
+    enum: ['admin', 'employee'], // ✅ Accepts only these two values
+    lowercase: true,
+    trim: true
   }
 });
-
-// ❌ Removed the pre-save password hashing hook
 
 const User = mongoose.model('User', userSchema);
 module.exports = User;

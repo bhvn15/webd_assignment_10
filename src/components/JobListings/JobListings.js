@@ -1,5 +1,5 @@
-import React from 'react';
-import jobPosts from '../../data/jobPosts';
+import React, { useEffect, useState } from 'react';
+import API from '../../services/api';
 import {
   Card,
   CardContent,
@@ -7,19 +7,59 @@ import {
   Button,
   Grid,
   Container,
-  Chip,
-  Stack,
+  CircularProgress,
+  Alert,
 } from '@mui/material';
 
 const JobListings = () => {
+  const [jobs, setJobs] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+
+  useEffect(() => {
+    API.get('/jobs')
+      .then(res => {
+        setJobs(res.data.jobs);
+        setLoading(false);
+      })
+      .catch(err => {
+        setError('Failed to load jobs');
+        setLoading(false);
+      });
+  }, []);
+
+  if (loading) {
+    return (
+      <Container sx={{ mt: 10, textAlign: 'center' }}>
+        <CircularProgress />
+      </Container>
+    );
+  }
+
+  if (error) {
+    return (
+      <Container sx={{ mt: 10 }}>
+        <Alert severity="error">{error}</Alert>
+      </Container>
+    );
+  }
+
+  if (jobs.length === 0) {
+    return (
+      <Container sx={{ mt: 10 }}>
+        <Alert severity="info">No jobs available right now. Check back later.</Alert>
+      </Container>
+    );
+  }
+
   return (
     <Container sx={{ marginTop: 4, marginBottom: 6 }}>
       <Typography variant="h4" gutterBottom align="center">
         Job Listings
       </Typography>
       <Grid container spacing={4}>
-        {jobPosts.map((job) => (
-          <Grid item xs={12} sm={6} md={4} key={job.id}>
+        {jobs.map((job) => (
+          <Grid item xs={12} sm={6} md={4} key={job._id}>
             <Card
               elevation={4}
               sx={{
@@ -37,28 +77,22 @@ const JobListings = () => {
                 </Typography>
 
                 <Typography variant="body2" sx={{ mt: 1, mb: 1 }}>
-                  <strong>Salary:</strong> {job.salary}
+                  <strong>Company:</strong> {job.company}
                 </Typography>
 
                 <Typography variant="body2" sx={{ mb: 1 }}>
-                  <strong>Required Skills:</strong>
+                  <strong>Salary:</strong> {job.salary}
                 </Typography>
-                <Stack direction="row" spacing={1} sx={{ flexWrap: 'wrap', mb: 2 }}>
-                  {job.skills.map((skill, i) => (
-                    <Chip key={i} label={skill} size="small" color="primary" />
-                  ))}
-                </Stack>
 
-                <Typography variant="caption" display="block" gutterBottom sx={{ mb: 2 }}>
-                  {job.lastUpdated}
+                <Typography variant="body2" sx={{ mb: 2 }}>
+                  {job.description.slice(0, 100)}...
                 </Typography>
 
                 <Button
                   variant="contained"
                   size="small"
                   fullWidth
-                  href={job.applyLink}
-                  target="_blank"
+                  onClick={() => alert('Apply functionality coming soon')}
                 >
                   Apply Now
                 </Button>

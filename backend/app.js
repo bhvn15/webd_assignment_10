@@ -1,9 +1,9 @@
 const express = require('express');
 const connectDB = require('./config/db');
 const userRoutes = require('./routes/userRoutes');
+const jobRoutes = require('./routes/jobRoutes'); // ✅ NEW
 const setupSwagger = require('./config/swagger');
 const cors = require('cors');
-
 
 connectDB();
 
@@ -13,11 +13,11 @@ app.use(cors());
 app.use(express.json());
 app.use('/uploads', express.static('uploads'));
 
-
+// Routes
 app.use('/user', userRoutes);
+app.use('/', jobRoutes); // ✅ Register job routes globally
 
-
-// ✅ Load Swagger Documentation
+// Swagger
 setupSwagger(app);
 
 const PORT = process.env.PORT || 5000;
