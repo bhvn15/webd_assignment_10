@@ -16,13 +16,10 @@ exports.createUser = async (req, res) => {
   }
 
   if (
-    !/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#])[A-Za-z\d@$!%*?&#]{8,}$/.test(
-      password
-    )
+    !/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#])[A-Za-z\d@$!%*?&#]{8,}$/.test(password)
   ) {
     return res.status(400).json({
-      error:
-        'Password must be at least 8 characters long, with one uppercase letter, one lowercase letter, one number, and one special character.',
+      error: 'Password must be at least 8 characters long, with one uppercase letter, one lowercase letter, one number, and one special character.',
     });
   }
 
@@ -61,15 +58,29 @@ exports.login = async (req, res) => {
       return res.status(400).json({ error: 'Invalid password' });
     }
 
+    const token = jwt.sign(
+      { id: user._id, type: user.type },
+      process.env.JWT_SECRET,
+      { expiresIn: '1h' }
+    );
+
+    console.log("👉 Final login response:", {
+      _id: user._id,
+      email: user.email,
+      type: user.type
+    });
+
     res.status(200).json({
       message: 'Login successful',
       user: {
-        id: user._id,
+        _id: user._id,
         fullName: user.fullName,
         email: user.email,
         type: user.type
-      }
+      },
+      token
     });
+
   } catch (error) {
     res.status(500).json({ error: 'Something went wrong' });
   }
@@ -97,8 +108,7 @@ exports.updateUser = async (req, res) => {
         !/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#])[A-Za-z\d@$!%*?&#]{8,}$/.test(password)
       ) {
         return res.status(400).json({
-          error:
-            'Password must be at least 8 characters long, with one uppercase letter, one lowercase letter, one number, and one special character.'
+          error: 'Password must be at least 8 characters long, with one uppercase letter, one lowercase letter, one number, and one special character.'
         });
       }
       user.password = await bcrypt.hash(password, 10);

@@ -27,19 +27,24 @@ const Login = () => {
         password: password,
       });
 
-      const { user, token } = res.data;
+      // 🔍 Inspect full backend response
+      console.log("📦 Full response from backend:", res.data);
+
+      const user = res.data.user || {};
+      const token = res.data.token;
 
       console.log("✅ Login Success:", user);
       console.log("🔐 Token:", token);
+      console.log("🧭 Redirecting user:", user?.type);
 
-      // ✅ Dispatch user and token to Redux
+      // Store in Redux
       dispatch(loginSuccess({ user, token }));
 
       alert('Login successful!');
 
-      // ✅ Role-based redirect
+      // Role-based routing
       if (user.type === 'admin') {
-        navigate('/employees');
+        navigate('/admin');
       } else if (user.type === 'employee') {
         navigate('/jobs');
       } else {

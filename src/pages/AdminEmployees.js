@@ -19,22 +19,17 @@ const AdminEmployees = () => {
   const { token } = useSelector((state) => state.auth);
 
   useEffect(() => {
-    if (!token) return;
-
-    API.get('/users', {
-      headers: {
-        Authorization: `Bearer ${token}`
-      }
-    })
+    API.get('/user/getAll')
       .then((res) => {
-        setUsers(res.data); // assumes backend returns array, not { users: [...] }
+        console.log("✅ Users response:", res.data);
+        setUsers(res.data.users);
         setLoading(false);
       })
       .catch((err) => {
         console.error('❌ Error fetching users:', err);
         setLoading(false);
       });
-  }, [token]);
+  }, []);
 
   if (loading) return <CircularProgress sx={{ mt: 4, mx: 'auto', display: 'block' }} />;
 

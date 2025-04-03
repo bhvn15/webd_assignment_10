@@ -12,6 +12,8 @@ import Contact from './components/Contact/Contact';
 
 import AdminEmployees from './pages/AdminEmployees';
 import AddJob from './pages/AddJob';
+import AdminDashboard from './pages/AdminDashboard'; // ✅ add this
+
 import { ProtectedRoute } from './routes/ProtectedRoute';
 
 function App() {
@@ -56,6 +58,11 @@ function App() {
         <Route path="/add-job" element={
           <ProtectedRoute allowedRoles={['admin']}>
             <AddJob />
+          </ProtectedRoute>
+        } />
+        <Route path="/admin" element={
+          <ProtectedRoute allowedRoles={['admin']}>
+            <AdminDashboard />
           </ProtectedRoute>
         } />
       </Routes>
