@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 import API from '../services/api';
 import {
   Table,
@@ -8,17 +9,34 @@ import {
   TableHead,
   TableRow,
   Paper,
-  Typography
+  Typography,
+  CircularProgress
 } from '@mui/material';
 
 const AdminEmployees = () => {
   const [users, setUsers] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const { token } = useSelector((state) => state.auth);
 
   useEffect(() => {
-    API.get('/users')
-      .then((res) => setUsers(res.data.users))
-      .catch((err) => console.error('❌ Error fetching users:', err));
-  }, []);
+    if (!token) return;
+
+    API.get('/users', {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    })
+      .then((res) => {
+        setUsers(res.data); // assumes backend returns array, not { users: [...] }
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.error('❌ Error fetching users:', err);
+        setLoading(false);
+      });
+  }, [token]);
+
+  if (loading) return <CircularProgress sx={{ mt: 4, mx: 'auto', display: 'block' }} />;
 
   return (
     <TableContainer component={Paper} sx={{ mt: 4 }}>

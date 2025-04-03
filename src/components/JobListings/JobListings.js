@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 import API from '../../services/api';
 import {
   Card,
@@ -15,18 +16,23 @@ const JobListings = () => {
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const { token } = useSelector((state) => state.auth); // ✅ Get token from Redux
 
   useEffect(() => {
-    API.get('/jobs')
+    API.get('/jobs', {
+      headers: {
+        Authorization: `Bearer ${token}` // ✅ Attach token
+      }
+    })
       .then(res => {
-        setJobs(res.data.jobs);
+        setJobs(res.data.jobs); // or res.data depending on backend
         setLoading(false);
       })
       .catch(err => {
         setError('Failed to load jobs');
         setLoading(false);
       });
-  }, []);
+  }, [token]);
 
   if (loading) {
     return (

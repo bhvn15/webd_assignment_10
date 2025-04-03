@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useSelector } from 'react-redux';
 import API from '../services/api';
 import {
   TextField,
@@ -20,6 +21,7 @@ const AddJob = () => {
 
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState('');
+  const { token } = useSelector((state) => state.auth); // ✅ Get token from Redux
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -34,10 +36,15 @@ const AddJob = () => {
     }
 
     try {
-      await API.post('/create/job', form);
+      await API.post('/create/job', form, {
+        headers: {
+          Authorization: `Bearer ${token}` // ✅ Secure the request
+        }
+      });
       setSuccess(true);
       setForm({ company: '', title: '', description: '', salary: '' });
     } catch (err) {
+      console.error('❌ Job creation failed:', err);
       setError('Job creation failed');
     }
   };
