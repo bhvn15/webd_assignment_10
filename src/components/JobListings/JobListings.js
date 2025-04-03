@@ -16,16 +16,16 @@ const JobListings = () => {
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const { token } = useSelector((state) => state.auth); // ✅ Get token from Redux
+  const { token } = useSelector((state) => state.auth);
 
   useEffect(() => {
     API.get('/jobs', {
       headers: {
-        Authorization: `Bearer ${token}` // ✅ Attach token
+        Authorization: `Bearer ${token}`
       }
     })
       .then(res => {
-        setJobs(res.data.jobs); // or res.data depending on backend
+        setJobs(res.data.jobs);
         setLoading(false);
       })
       .catch(err => {
@@ -60,7 +60,7 @@ const JobListings = () => {
 
   return (
     <Container sx={{ marginTop: 4, marginBottom: 6 }}>
-      <Typography variant="h4" gutterBottom align="center">
+      <Typography variant="h4" color="primary" fontWeight="bold" gutterBottom align="center">
         Job Listings
       </Typography>
       <Grid container spacing={4}>
@@ -78,7 +78,7 @@ const JobListings = () => {
               }}
             >
               <CardContent>
-                <Typography variant="h6" sx={{ fontWeight: 600 }}>
+                <Typography variant="h6" color="primary" fontWeight="bold">
                   {job.title}
                 </Typography>
 
@@ -96,8 +96,10 @@ const JobListings = () => {
 
                 <Button
                   variant="contained"
+                  color="secondary"
                   size="small"
                   fullWidth
+                  sx={{ fontWeight: 'bold', mt: 1 }}
                   onClick={() => alert('Apply functionality coming soon')}
                 >
                   Apply Now

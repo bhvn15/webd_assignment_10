@@ -27,9 +27,7 @@ const Login = () => {
         password: password,
       });
 
-      // 🔍 Inspect full backend response
       console.log("📦 Full response from backend:", res.data);
-
       const user = res.data.user || {};
       const token = res.data.token;
 
@@ -37,12 +35,9 @@ const Login = () => {
       console.log("🔐 Token:", token);
       console.log("🧭 Redirecting user:", user?.type);
 
-      // Store in Redux
       dispatch(loginSuccess({ user, token }));
-
       alert('Login successful!');
 
-      // Role-based routing
       if (user.type === 'admin') {
         navigate('/admin');
       } else if (user.type === 'employee') {
@@ -61,7 +56,7 @@ const Login = () => {
   return (
     <Container maxWidth="sm" sx={{ mt: 10 }}>
       <Paper elevation={4} sx={{ padding: 4, borderRadius: 3 }}>
-        <Typography variant="h4" align="center" gutterBottom>
+        <Typography variant="h4" color="primary" fontWeight="bold" align="center" gutterBottom>
           Login to CareerConnect
         </Typography>
 
@@ -69,22 +64,31 @@ const Login = () => {
           <TextField
             label="Email"
             type="email"
+            variant="outlined"
+            fullWidth
+            margin="normal"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
-            fullWidth
             required
-            sx={{ mb: 3 }}
           />
           <TextField
             label="Password"
             type="password"
+            variant="outlined"
+            fullWidth
+            margin="normal"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            fullWidth
             required
-            sx={{ mb: 4 }}
           />
-          <Button type="submit" variant="contained" color="primary" fullWidth size="large">
+          <Button
+            type="submit"
+            variant="contained"
+            color="secondary"
+            size="large"
+            fullWidth
+            sx={{ fontWeight: 'bold', mt: 2, borderRadius: 2 }}
+          >
             Login
           </Button>
         </Box>

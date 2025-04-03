@@ -19,7 +19,11 @@ const AdminEmployees = () => {
   const { token } = useSelector((state) => state.auth);
 
   useEffect(() => {
-    API.get('/user/getAll')
+    API.get('/user/getAll', {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    })
       .then((res) => {
         console.log("✅ Users response:", res.data);
         setUsers(res.data.users);
@@ -29,21 +33,27 @@ const AdminEmployees = () => {
         console.error('❌ Error fetching users:', err);
         setLoading(false);
       });
-  }, []);
+  }, [token]);
 
   if (loading) return <CircularProgress sx={{ mt: 4, mx: 'auto', display: 'block' }} />;
 
   return (
-    <TableContainer component={Paper} sx={{ mt: 4 }}>
-      <Typography variant="h5" align="center" sx={{ paddingTop: 2 }}>
+    <TableContainer component={Paper} sx={{ mt: 4, maxWidth: 1000, mx: 'auto' }}>
+      <Typography 
+        variant="h4" 
+        color="primary" 
+        fontWeight="bold" 
+        align="center" 
+        sx={{ pt: 2 }}
+      >
         All Registered Users
       </Typography>
       <Table>
         <TableHead>
           <TableRow>
-            <TableCell><strong>Full Name</strong></TableCell>
-            <TableCell><strong>Email</strong></TableCell>
-            <TableCell><strong>Role</strong></TableCell>
+            <TableCell sx={{ fontWeight: 'bold', backgroundColor: 'secondary.light' }}>Full Name</TableCell>
+            <TableCell sx={{ fontWeight: 'bold', backgroundColor: 'secondary.light' }}>Email</TableCell>
+            <TableCell sx={{ fontWeight: 'bold', backgroundColor: 'secondary.light' }}>Role</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>

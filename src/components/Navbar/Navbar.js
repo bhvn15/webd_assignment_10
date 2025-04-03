@@ -1,27 +1,46 @@
 import React from 'react';
 import { AppBar, Toolbar, Typography, Button, Box } from '@mui/material';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux';
+import { logout } from '../../redux/authSlice';
 
 const Navbar = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { user } = useSelector((state) => state.auth);
 
   const handleLogout = () => {
-    sessionStorage.clear();
+    dispatch(logout());
     navigate('/');
   };
 
   return (
-    <AppBar position="static" color="primary">
-      <Toolbar>
-        <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-          Carrer Connect
+<AppBar position="static" sx={{ backgroundColor: '#8e24aa' }}>
+<Toolbar sx={{ display: 'flex', justifyContent: 'space-between' }}>
+        <Typography
+          variant="h6"
+          sx={{ fontWeight: 'bold', cursor: 'pointer' }}
+          onClick={() => navigate(user.type === 'admin' ? '/admin' : '/home')}
+        >
+          CareerConnect
         </Typography>
         <Box>
-          <Button color="inherit" component={Link} to="/home">Home</Button>
-          <Button color="inherit" component={Link} to="/jobs">Jobs</Button>
-          <Button color="inherit" component={Link} to="/companies">Companies</Button>
-          <Button color="inherit" component={Link} to="/about">About</Button>
-          <Button color="inherit" component={Link} to="/contact">Contact</Button>
+          {user?.type === 'employee' && (
+            <>
+              <Button color="inherit" onClick={() => navigate('/jobs')}>Jobs</Button>
+              <Button color="inherit" onClick={() => navigate('/companies')}>Companies</Button>
+              <Button color="inherit" onClick={() => navigate('/about')}>About</Button>
+              <Button color="inherit" onClick={() => navigate('/contact')}>Contact</Button>
+            </>
+          )}
+
+          {user?.type === 'admin' && (
+            <>
+              <Button color="inherit" onClick={() => navigate('/employees')}>Employees</Button>
+              <Button color="inherit" onClick={() => navigate('/add-job')}>Add Job</Button>
+            </>
+          )}
+
           <Button color="inherit" onClick={handleLogout}>Logout</Button>
         </Box>
       </Toolbar>

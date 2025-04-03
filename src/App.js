@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, useLocation, BrowserRouter as Router } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
 import Login from './components/Login/Login';
@@ -12,16 +12,17 @@ import Contact from './components/Contact/Contact';
 
 import AdminEmployees from './pages/AdminEmployees';
 import AddJob from './pages/AddJob';
-import AdminDashboard from './pages/AdminDashboard'; // ✅ add this
+import AdminDashboard from './pages/AdminDashboard';
 
 import { ProtectedRoute } from './routes/ProtectedRoute';
 
-function App() {
+function AppContent() {
   const user = useSelector((state) => state.auth.user);
+  const location = useLocation();
 
   return (
-    <BrowserRouter>
-      {user && <Navbar />}
+    <>
+      {location.pathname !== '/' && user && <Navbar />}
 
       <Routes>
         <Route path="/" element={<Login />} />
@@ -66,7 +67,15 @@ function App() {
           </ProtectedRoute>
         } />
       </Routes>
-    </BrowserRouter>
+    </>
+  );
+}
+
+function App() {
+  return (
+    <Router>
+      <AppContent />
+    </Router>
   );
 }
 

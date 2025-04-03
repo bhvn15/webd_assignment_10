@@ -21,7 +21,7 @@ const AddJob = () => {
 
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState('');
-  const { token } = useSelector((state) => state.auth); // ✅ Get token from Redux
+  const { token } = useSelector((state) => state.auth);
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -38,7 +38,7 @@ const AddJob = () => {
     try {
       await API.post('/create/job', form, {
         headers: {
-          Authorization: `Bearer ${token}` // ✅ Secure the request
+          Authorization: `Bearer ${token}`
         }
       });
       setSuccess(true);
@@ -51,12 +51,15 @@ const AddJob = () => {
 
   return (
     <Paper elevation={4} sx={{ padding: 4, mt: 5, maxWidth: 600, mx: 'auto' }}>
-      <Typography variant="h5" gutterBottom>Add New Job</Typography>
+      <Typography variant="h4" color="primary" fontWeight="bold" gutterBottom>
+        Add New Job
+      </Typography>
 
       <Box component="form" onSubmit={handleSubmit} noValidate>
         <TextField
           label="Company"
           name="company"
+          variant="outlined"
           fullWidth
           margin="normal"
           value={form.company}
@@ -65,6 +68,7 @@ const AddJob = () => {
         <TextField
           label="Job Title"
           name="title"
+          variant="outlined"
           fullWidth
           margin="normal"
           value={form.title}
@@ -73,6 +77,7 @@ const AddJob = () => {
         <TextField
           label="Description"
           name="description"
+          variant="outlined"
           fullWidth
           multiline
           rows={4}
@@ -83,6 +88,7 @@ const AddJob = () => {
         <TextField
           label="Salary"
           name="salary"
+          variant="outlined"
           fullWidth
           margin="normal"
           value={form.salary}
@@ -92,22 +98,20 @@ const AddJob = () => {
         <Button
           type="submit"
           variant="contained"
-          color="primary"
-          sx={{ mt: 2 }}
+          color="secondary"
+          sx={{ mt: 2, borderRadius: 2, fontWeight: 'bold' }}
           fullWidth
         >
           Post Job
         </Button>
       </Box>
 
-      {/* Success Snackbar */}
       <Snackbar open={success} autoHideDuration={3000} onClose={() => setSuccess(false)}>
         <Alert severity="success" onClose={() => setSuccess(false)}>
           Job posted successfully!
         </Alert>
       </Snackbar>
 
-      {/* Error Snackbar */}
       <Snackbar open={!!error} autoHideDuration={3000} onClose={() => setError('')}>
         <Alert severity="error" onClose={() => setError('')}>
           {error}
